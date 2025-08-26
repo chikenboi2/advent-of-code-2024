@@ -1,10 +1,10 @@
 import java.util.*;
 import java.io.*;
 
-public class day5 {
+public class Day5 {
     static public int ret = 0;
     public static void main(String[] args) throws Exception{
-        BufferedReader in = new BufferedReader(new FileReader("/Users/samueld/Documents/Code/aoc/2024/Day 5/day5.in"));
+        BufferedReader in = new BufferedReader(new FileReader("./day5.in"));
 
         int n = 1176, m = 204; // length of inputs
         //int n = 21, m = 6;
