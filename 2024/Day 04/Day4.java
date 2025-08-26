@@ -68,7 +68,7 @@ public class Day4 {
 
         return true;
     }
-    
+
     public static int countMasXOccurrences(char[][] grid) {
         int rows = grid.length;
         int cols = grid[0].length;
@@ -78,18 +78,15 @@ public class Day4 {
         for (int r = 1; r < rows - 1; r++) {
             for (int c = 1; c < cols - 1; c++) {
                 // Check all possible MAS-X patterns
-                if ((grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'S' &&
+                if ((grid[r][c] == 'A') &&
+                    ((grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'S' &&
                      grid[r + 1][c - 1] == 'M' && grid[r + 1][c + 1] == 'S') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'S' &&
+                    (grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'S' &&
                      grid[r + 1][c - 1] == 'M' && grid[r + 1][c + 1] == 'M') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'M' &&
+                    (grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'M' &&
                      grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'S') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'M' &&
-                     grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'M')) {
+                    (grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'M' &&
+                     grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'M'))) {
                     count++;
                 }
             }
