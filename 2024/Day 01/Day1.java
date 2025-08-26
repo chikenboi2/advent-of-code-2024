@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class Day1 {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         ArrayList<Integer> rlist = new ArrayList<Integer>();
         ArrayList<Integer> llist = new ArrayList<Integer>();
         inputLists(rlist, llist);
@@ -10,7 +10,7 @@ public class Day1 {
         part2(rlist, llist);
     }
 
-    public static void part1(ArrayList<Integer> rlist, ArrayList<Integer> llist) throws Exception {
+    public static void part1(ArrayList<Integer> rlist, ArrayList<Integer> llist) {
         Collections.sort(rlist);
         Collections.sort(llist);
 
@@ -21,7 +21,7 @@ public class Day1 {
         System.out.println(ret);
     }
 
-    public static void part2(ArrayList<Integer> rlist, ArrayList<Integer> llist) throws Exception {
+    public static void part2(ArrayList<Integer> rlist, ArrayList<Integer> llist) {
         Map<Integer, Integer> oc = new HashMap<>();
         for (int number : llist) {
             oc.put(number, oc.getOrDefault(number, 0) + 1);
