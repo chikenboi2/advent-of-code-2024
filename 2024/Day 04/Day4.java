@@ -1,9 +1,9 @@
 import java.util.*;
 import java.io.*;
 
-public class day4 {
+public class Day4 {
     public static void main(String[] args) throws Exception{
-        Scanner in = new Scanner(new FileReader(new File("/Users/samueld/Documents/Code/aoc/2024/Day 4/day4.txt")));
+        Scanner in = new Scanner(new FileReader(new File("./day4.txt")));
 
         int s = 140;
         char[][] grid = new char[s][s];
@@ -16,13 +16,6 @@ public class day4 {
         
         System.out.println(countXmasOccurrences(grid));
         System.out.println(countMasXOccurrences(grid));
-
-
-
-
-
-
-
         in.close();
     }
 
@@ -75,6 +68,7 @@ public class day4 {
 
         return true;
     }
+
     public static int countMasXOccurrences(char[][] grid) {
         int rows = grid.length;
         int cols = grid[0].length;
@@ -84,18 +78,15 @@ public class day4 {
         for (int r = 1; r < rows - 1; r++) {
             for (int c = 1; c < cols - 1; c++) {
                 // Check all possible MAS-X patterns
-                if ((grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'S' &&
+                if ((grid[r][c] == 'A') &&
+                    ((grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'S' &&
                      grid[r + 1][c - 1] == 'M' && grid[r + 1][c + 1] == 'S') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'S' &&
+                    (grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'S' &&
                      grid[r + 1][c - 1] == 'M' && grid[r + 1][c + 1] == 'M') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'M' &&
+                    (grid[r - 1][c - 1] == 'M' && grid[r - 1][c + 1] == 'M' &&
                      grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'S') ||
-                    (grid[r][c] == 'A' &&
-                     grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'M' &&
-                     grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'M')) {
+                    (grid[r - 1][c - 1] == 'S' && grid[r - 1][c + 1] == 'M' &&
+                     grid[r + 1][c - 1] == 'S' && grid[r + 1][c + 1] == 'M'))) {
                     count++;
                 }
             }
