@@ -1,0 +1,149 @@
+import java.util.*;
+import java.io.*;
+// Day 15 REDO
+public class Day15_2 {
+    public static final char WALL = '#', BOX = 'O', EMPTY = '.', ROBOT = '@';
+    public static final char LBOX = '[',  RBOX = ']';
+    public static final String UP = "^", DOWN = "v", RIGHT = ">", LEFT = "<";
+
+    public static void main(String[] args) throws Exception{
+        Scanner in = new Scanner(new FileReader("/Users/samueld/Documents/Code/aoc/2024/Day 15/day15.in"));
+        String line = in.nextLine();
+        int size = line.length();
+        char[][] grid = new char[size][size];
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                grid[i][j] = line.charAt(j);
+            }
+            line = in.nextLine();
+        }
+
+        String moves = "";
+        while(in.hasNextLine()) moves += in.nextLine();
+        //part1(grid, moves);
+        part2(grid, moves);
+        in.close();
+    }
+    
+    public static void part1(char[][] grid, String moves){
+        int robo_r = -1, robo_c = -1; // location of robot
+        int wall_i = Integer.MAX_VALUE, box_i = Integer.MAX_VALUE, empty_i = Integer.MAX_VALUE; // index of certain items
+        for(String move : moves.split("")){ // iterate thru each move
+            grid = rotate(grid, move, false);
+            for(int i = 0; i < grid.length; i++){ // update location of ROBOT
+                for(int j = 0; j < grid.length; j++){
+                    if(grid[i][j] == ROBOT){
+                        robo_r = i;
+                        robo_c = j;
+                    }
+                }
+            }
+            String load = new String(grid[robo_r]).substring(robo_c); // what we're pushing
+            wall_i = (load.indexOf(WALL) != -1) ? load.indexOf(WALL) : Integer.MAX_VALUE; 
+            box_i = (load.indexOf(BOX) != -1) ? load.indexOf(BOX) : Integer.MAX_VALUE; 
+            empty_i = (load.indexOf(EMPTY) != -1) ? load.indexOf(EMPTY) : Integer.MAX_VALUE; 
+
+            // System.out.println(load);
+
+            if(wall_i < empty_i){} // NO SPACE DO NOTHING; // @_#_ -> @_#_
+            else if(empty_i < Math.min(box_i, wall_i)){ // @._ -> .@_
+                grid[robo_r][robo_c] = EMPTY;
+                grid[robo_r][robo_c + 1] = ROBOT;
+            }
+            else if(box_i < empty_i){ // @O.# -> .@O#
+                grid[robo_r][robo_c] = EMPTY;
+                grid[robo_r][robo_c + 1] = ROBOT;
+                for(int i = 2; i <= Math.min(wall_i, empty_i); i++){
+                    grid[robo_r][robo_c + i] = BOX;
+                }
+            } 
+            grid = rotate(grid, move, true);
+            // System.out.println("push " +  move);
+            // display(grid);
+        }
+        System.out.println(value(grid, BOX));
+    }
+    public static void part2(char[][] grid, String moves){
+        int robo_r = -1, robo_c = -1; // location of robot
+        int wall_i = Integer.MAX_VALUE, box_i = Integer.MAX_VALUE, empty_i = Integer.MAX_VALUE; // index of certain items
+        char[][] gridb = new char[grid.length][grid[0].length * 2]; // make bigger grid
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0 ; j < grid[i].length; j++){
+                switch (grid[i][j]) {
+                    case WALL:
+                        gridb[i][j] = WALL;
+                        gridb[i][j+1] = WALL;
+                    case BOX:
+                        gridb[i][j] = LBOX;
+                        gridb[i][j+1] = RBOX;
+                    case EMPTY:
+                        gridb[i][j] = EMPTY;
+                        gridb[i][j+1] = EMPTY;
+                    case ROBOT:
+                        gridb[i][j] = ROBOT;
+                        gridb[i][j+1] = EMPTY;
+                }
+            }
+        }
+        for(String move : moves.split("")){ // iterate thru each move
+            grid = rotate(grid, move, false);
+            for(int i = 0; i < grid.length; i++){ // update location of ROBOT
+                for(int j = 0; j < grid.length; j++){
+                    if(grid[i][j] == ROBOT){
+                        robo_r = i;
+                        robo_c = j;
+                    }
+                }
+            }
+            // push
+            
+            grid = rotate(grid, move, true);
+            System.out.println("push " +  move);
+            display(grid);
+        }
+        // System.out.println(value(grid, LBOX));
+    }
+
+    public static char[][] push(char[][] grid, char[][] visited, int row, int col) { 
+        char token = grid[row][col];
+        if(token == WALL) return grid;
+        
+        // if(token == EMPTY) 
+        char[][] ret = new char[grid.length][grid[0].length];
+        String area = new String(grid[row]).substring(col);
+        System.out.println(area);
+
+        return grid;
+    }
+
+    public static char[][] rotate(char[][] grid, String dir, boolean reverse){ // rotates based on direction s.t. always moving right
+        char[][] ret = new char[grid.length][grid[0].length];
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[i].length; j++){
+                if(dir.equals(RIGHT)) ret[i][j] = grid[i][j];
+                else if(!reverse && dir.equals(DOWN) || reverse && dir.equals(UP)) ret[grid[i].length - j- 1][i] = grid[i][j];
+                else if(dir.equals(LEFT)) ret[grid.length - i - 1][grid[i].length - j - 1] = grid[i][j];
+                else if (!reverse && dir.equals(UP) || reverse && dir.equals(DOWN))  ret[j][grid.length - i - 1] = grid[i][j]; 
+                else System.out.println("rotate cooked");
+            }
+        }
+        return ret;
+    }
+    public static long value(char[][] grid, char val){ // calculates final value
+        long tot = 0;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[i].length; j++){
+                if(grid[i][j] == val) tot += 100*i + j;
+            }
+        }
+        return tot;
+    }
+    public static void display(char[][] grid){ // prints 2d array neatly
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[i].length; j++){
+                System.out.print(grid[i][j]);
+            }
+            System.out.println();
+        }
+    }
+}
