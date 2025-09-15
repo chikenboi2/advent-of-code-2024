@@ -35,6 +35,7 @@ public class Day15_2 {
                     if(grid[i][j] == ROBOT){
                         robo_r = i;
                         robo_c = j;
+                        break;
                     }
                 }
             }
@@ -63,6 +64,7 @@ public class Day15_2 {
         }
         System.out.println(value(grid, BOX));
     }
+    
     public static void part2(char[][] grid, String moves){
         int robo_r = -1, robo_c = -1; // location of robot
         int wall_i = Integer.MAX_VALUE, box_i = Integer.MAX_VALUE, empty_i = Integer.MAX_VALUE; // index of certain items
@@ -71,47 +73,87 @@ public class Day15_2 {
             for(int j = 0 ; j < grid[i].length; j++){
                 switch (grid[i][j]) {
                     case WALL:
-                        gridb[i][j] = WALL;
-                        gridb[i][j+1] = WALL;
+                        gridb[i][j*2] = WALL;
+                        gridb[i][j*2+1] = WALL;
+                        break;
                     case BOX:
-                        gridb[i][j] = LBOX;
-                        gridb[i][j+1] = RBOX;
+                        gridb[i][j*2] = LBOX;
+                        gridb[i][j*2+1] = RBOX;
+                        break;
                     case EMPTY:
-                        gridb[i][j] = EMPTY;
-                        gridb[i][j+1] = EMPTY;
+                        gridb[i][j*2] = EMPTY;
+                        gridb[i][j*2+1] = EMPTY;
+                        break;
                     case ROBOT:
-                        gridb[i][j] = ROBOT;
-                        gridb[i][j+1] = EMPTY;
+                        gridb[i][j*2] = ROBOT;
+                        gridb[i][j*2+1] = EMPTY;
+                        break;
                 }
             }
         }
         for(String move : moves.split("")){ // iterate thru each move
-            grid = rotate(grid, move, false);
-            for(int i = 0; i < grid.length; i++){ // update location of ROBOT
-                for(int j = 0; j < grid.length; j++){
-                    if(grid[i][j] == ROBOT){
+            display(gridb);
+            gridb = rotate(gridb, move, false);
+            for(int i = 0; i < gridb.length; i++){ // update location of ROBOT
+                for(int j = 0; j < gridb[i].length; j++){
+                    if(gridb[i][j] == ROBOT){
                         robo_r = i;
                         robo_c = j;
+                        break;
                     }
                 }
             }
-            // push
-            
-            grid = rotate(grid, move, true);
+            gridb = push(gridb, move, robo_r, robo_c);
+            gridb = rotate(gridb, move, true);
             System.out.println("push " +  move);
-            display(grid);
         }
         // System.out.println(value(grid, LBOX));
     }
 
-    public static char[][] push(char[][] grid, char[][] visited, int row, int col) { 
-        char token = grid[row][col];
+    public static char[][] push(char[][] grid, String move, int row, int col) { 
+        if(move.equals(RIGHT) || move.equals(LEFT)){ // easy cases, basically same as p1
+            int wall_i = Integer.MAX_VALUE, box_i = Integer.MAX_VALUE, empty_i = Integer.MAX_VALUE; // index of certain items
+            String load = new String(grid[row]).substring(col); // what we're pushing
+            wall_i = (load.indexOf(WALL) != -1) ? load.indexOf(WALL) : Integer.MAX_VALUE; 
+            if(move.equals(LEFT)) box_i = (load.indexOf(RBOX) != -1) ? load.indexOf(RBOX) : Integer.MAX_VALUE; 
+            else box_i = (load.indexOf(LBOX) != -1) ? load.indexOf(LBOX) : Integer.MAX_VALUE; 
+            empty_i = (load.indexOf(EMPTY) != -1) ? load.indexOf(EMPTY) : Integer.MAX_VALUE; 
+
+            if(wall_i < empty_i){} // NO SPACE DO NOTHING; // @_#_ -> @_#_
+            else if(empty_i < Math.min(box_i, wall_i)){ // @._ -> .@_
+                grid[row][col] = EMPTY;
+                grid[row][col + 1] = ROBOT;
+            }
+            else if(box_i < empty_i){ // @O.# -> .@O#
+                grid[row][col] = EMPTY;
+                grid[row][col + 1] = ROBOT;
+                for(int i = 2; i <= Math.min(wall_i, empty_i); i+=2){
+                    if(move.equals(RIGHT)){
+                        grid[row][col + i] = LBOX;
+                        grid[row][col + i + 1] = RBOX;  
+                    }
+                    else if(move.equals(LEFT)){
+                        grid[row][col + i] = RBOX;
+                        grid[row][col + i + 1] = LBOX;
+                    }
+                    else{
+                        System.out.println("RLpush cooked");
+                        System.exit(1);
+                    }
+                }
+            } 
+        }
+        else { // harder cases, recursive prolly
+
+        }
+        
+        /*char token = grid[row][col];
         if(token == WALL) return grid;
         
         // if(token == EMPTY) 
         char[][] ret = new char[grid.length][grid[0].length];
         String area = new String(grid[row]).substring(col);
-        System.out.println(area);
+        System.out.println(area);*/
 
         return grid;
     }
